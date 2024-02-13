@@ -1,28 +1,25 @@
 from abc import ABC,abstractmethod
+import functools
+import Pions
 
+@functools.total_ordering
 #création d'une classe
 class Pions:
     #constructeur avec les paramètre de position
-    def __init__(self, str id, int x, int y, str couleur):
+    def __init__(self,id:str,x:int,y:int,couleur:str):
         self.id = id
         self.coordonnees_X = x
         self.coordonnees_Y = y
         self.couleur = couleur
         self.vivant = True
-        
-    #constructeur sans les paramètre de position
-    def __init_(self, str id, str couleur):
-        self.id = id
-        self.couleur = couleur
-        self.vivant = True
 
     #fonction pour vérifier le déplacement en diagonale
     @abstractmethod
-    def checkRegleDeDeplacement(int x, int y):
+    def checkRegleDeDeplacement(self,x:int,y:int)->bool:
         pass
 
     #fonction pour déplacer le pion en diagonale
-    def se_deplacer(int x, int y):
+    def se_deplacer(self,x:int,y:int):
         try:
             self.coordonnees_X
             self.coordonnees_Y
@@ -35,5 +32,67 @@ class Pions:
 
     #fonction pour capturer un pion
     @abstractmethod
-    def capturerPion(Pions p):
+    def capturerPion(p:Pions):
         pass
+    
+    #fonctions de comparaison
+    def __eq__(self, other):
+        if(type(other)==Pions):
+            return (self.id==other.id) or ((self.x==other.x)and(self.y==other.y))
+        else:
+            return False
+
+    def __ne__(self, other):
+        if(type(other)==Pions):
+            return self.id!=other.id
+        else:
+            return True
+    
+    def __le__(self, other):
+        if not self._is_valid_operand(other):
+            return NotImplemented
+        else:
+            if(self.x==other.x):
+                if(self.y==other.y):
+                    return False
+                else:
+                    return self.y<=other.y
+            else:
+                return self.x<=other.x
+
+    
+    def __lt__(self, other):
+        if not self._is_valid_operand(other):
+            return NotImplemented
+        else:
+            if(self.x==other.x):
+                if(self.y==other.y):
+                    return False
+                else:
+                    return self.y<other.y
+            else:
+                return self.x<other.x
+    
+    def __ge__(self, other):
+        if not self._is_valid_operand(other):
+            return NotImplemented
+        else:
+            if(self.x==other.x):
+                if(self.y==other.y):
+                    return False
+                else:
+                    return self.y>=other.y
+            else:
+                return self.x>=other.x
+    
+    def __gt__(self, other):
+        if not self._is_valid_operand(other):
+            return NotImplemented
+        else:
+            if(self.x==other.x):
+                if(self.y==other.y):
+                    return False
+                else:
+                    return self.y>=other.y
+            else:
+                return self.x>=other.x

@@ -1,0 +1,224 @@
+from Pions import Pions
+from pionBlanc import pionBlanc
+from pionNoir import pionNoir
+from Dame import Dame
+from DameBlanche import DameBlanche
+from DameNoire import DameNoire
+from Damier import Damier
+import constants as const
+from math import log
+
+class Partie:
+    def __init__(self,id:str,winner:str):
+        self.id = id
+        self.winner = winner
+        self.damier=Damier("1",const.PLATEAU)
+
+        # Initialisation de la liste de pions
+        self.listePion={}
+        cpt=1
+        for y in range(1,4):
+            if (y % 2) == 0:
+                for x in range(2,const.PLATEAU,2):
+                    self.addPion(pionBlanc("B"+str(cpt),x,y))
+            else:
+                for x in range(1,const.PLATEAU,2):
+                    self.addPion(pionBlanc("B"+str(cpt),x,y))
+            cpt=cpt+1
+
+        cpt=1
+        for y in range(const.PLATEAU-2,const.PLATEAU+1):
+            if (y % 2) == 0:
+                for x in range(2,const.PLATEAU,2):
+                    self.addPion(pionNoir("N"+str(cpt),x,y))
+            else:
+                for x in range(1,const.PLATEAU,2):
+                    self.addPion(pionNoir("N"+str(cpt),x,y))
+            cpt=cpt+1
+
+    
+    def effectuerDeplacement(self,x:int,y:int,pion:Pions):
+        
+    def addPion(self,pion:Pions):
+        self.listePion.insert(pion)
+        self.listePion.sort()
+
+    def removePion(self,pion:Pions):
+        self.listePion.remove(pion)
+        self.listePion.sort()
+
+    def getPion(self,id:str):
+        for p in self.listePion:
+            if(p.id==id):
+                return p
+
+    def getPionPos(self,posX:int, posY:int):
+        nb:int
+        min:int
+        max:int
+        max=self.listePion.__sizeof__()
+        min=0
+        while(debut!=fin):
+            nb=(min+max)/2
+            var=self.listePion[nb]
+            if(var.x==posX):
+                if(var.y==posY):
+                    return var
+                elif(var.y<posY):
+                    debut=var
+                    min=nb
+                elif(var.y>posY):
+                    fin=var
+                    max=nb
+            elif(var.x<posX):
+                debut=var
+                min=nb
+            elif(var.x>posX):
+                fin=var
+                max=nb
+        return False
+
+
+    def getPionIndex(self,index:int):
+        return self.listePion[index]
+
+    def checkWin(self):
+        cptWhite=0
+        cptBlack=0
+        for pion in self.listePion:
+            if pion.couleur=="blanc" and pion.vivant:
+                cptWhite=cptWhite+1
+            elif pion.couleur=="noir" and pion.vivant:
+                cptBlack=cptBlack+1
+        if cptWhite>0 and cptBlack>0:
+            return False
+        elif cptWhite>0 and cptBlack==0:
+            return "W"
+        elif cptWhite==0 and cptBlack>0:
+            return "B"
+
+
+    def checkCapture(self,pion):
+        if(type(pion)=="pionNoir.pionNoir"):
+            pAutour=self.getPionPos(pion.coordonnees_X+1,pion.coordonnees_Y+1)
+            if (type(pAutour)=="pionBlanc.pionBlanc" or type(pAutour)=="DameBlanche.DameBlanche" )and not(self.getPionPos(pion.coordonnees_X+2,pion.coordonnees_Y+2)):
+                return True
+            pAutour=self.getPionPos(pion.coordonnees_X+1,pion.coordonnees_Y-1)
+            if (type(pAutour)=="pionBlanc.pionBlanc" or type(pAutour)=="DameBlanche.DameBlanche" )and not(self.getPionPos(pion.coordonnees_X+2,pion.coordonnees_Y-2)):
+                return True
+            pAutour=self.getPionPos(pion.coordonnees_X-1,pion.coordonnees_Y+1)
+            if (type(pAutour)=="pionBlanc.pionBlanc" or type(pAutour)=="DameBlanche.DameBlanche" )and not(self.getPionPos(pion.coordonnees_X-2,pion.coordonnees_Y+2)):
+                return True
+            pAutour=self.getPionPos(pion.coordonnees_X-1,pion.coordonnees_Y-1)
+            if (type(pAutour)=="pionBlanc.pionBlanc" or type(pAutour)=="DameBlanche.DameBlanche" )and not(self.getPionPos(pion.coordonnees_X-2,pion.coordonnees_Y-2)):
+                return True
+            return False
+
+        elif(type(pion)=="pionBlanc.pionBlanc"):
+            pAutour=self.getPionPos(pion.coordonnees_X+1,pion.coordonnees_Y+1)
+            if (type(pAutour)=="pionNoir.pionNoir" or type(pAutour)=="DameNoire.DameNoire" )and not(self.getPionPos(pion.coordonnees_X+2,pion.coordonnees_Y+2)):
+                return True
+            pAutour=self.getPionPos(pion.coordonnees_X+1,pion.coordonnees_Y-1)
+            if (type(pAutour)=="pionNoir.pionNoir" or type(pAutour)=="DameNoire.DameNoire" )and not(self.getPionPos(pion.coordonnees_X+2,pion.coordonnees_Y-2)):
+                return True
+            pAutour=self.getPionPos(pion.coordonnees_X-1,pion.coordonnees_Y+1)
+            if (type(pAutour)=="pionNoir.pionNoir" or type(pAutour)=="DameNoire.DameNoire" )and not(self.getPionPos(pion.coordonnees_X-2,pion.coordonnees_Y+2)):
+                return True
+            pAutour=self.getPionPos(pion.coordonnees_X-1,pion.coordonnees_Y-1)
+            if (type(pAutour)=="pionNoir.pionNoir" or type(pAutour)=="DameNoire.DameNoire" )and not(self.getPionPos(pion.coordonnees_X-2,pion.coordonnees_Y-2)):
+                return True
+            return False
+        elif(type(pion)=="DameNoire.DameNoire"):
+            x=pion.coordonnees_X+1
+            y=pion.coordonnees_Y+1
+            while x<self.damier.nbCase and y<self.damier.nbCase:
+                pAutour=self.getPionPos(x,y)
+                if (type(pAutour)=="pionBlanc.pionBlanc" or type(pAutour)=="DameBlanche.DameBlanche" )and not(self.getPionPos(x+1,y+1)):
+                    return True
+                x=x+1
+                y=y+1
+            x=pion.coordonnees_X+1
+            y=pion.coordonnees_Y-1
+            while x<self.damier.nbCase and y>0:
+                pAutour=self.getPionPos(x,y)
+                if (type(pAutour)=="pionBlanc.pionBlanc" or type(pAutour)=="DameBlanche.DameBlanche" )and not(self.getPionPos(x+1,y-1)):
+                    return True
+                x=x+1
+                y=y-1
+            x=pion.coordonnees_X-1
+            y=pion.coordonnees_Y+1
+            while x>0 and y<self.damier.nbCase:
+                pAutour=self.getPionPos(x,y)
+                if (type(pAutour)=="pionBlanc.pionBlanc" or type(pAutour)=="DameBlanche.DameBlanche" )and not(self.getPionPos(x-1,y+1)):
+                    return True
+                x=x-1
+                y=y+1
+            x=pion.coordonnees_X-1
+            y=pion.coordonnees_Y-1
+            while x>0 and y>0:
+                pAutour=self.getPionPos(x,y)
+                if (type(pAutour)=="pionBlanc.pionBlanc" or type(pAutour)=="DameBlanche.DameBlanche" )and not(self.getPionPos(x-1,y-1)):
+                    return True
+                x=x-1
+                y=y-1
+        elif(type(pion)=="DameBlanche.DameBlanche"):
+            x=pion.coordonnees_X+1
+            y=pion.coordonnees_Y+1
+            while x<self.damier.nbCase and y<self.damier.nbCase:
+                pAutour=self.getPionPos(x,y)
+                if (type(pAutour)=="pionNoir.pionNoir" or type(pAutour)=="DameNoire.DameNoire" )and not(self.getPionPos(x+1,y+1)):
+                    return True
+                x=x+1
+                y=y+1
+            x=pion.coordonnees_X+1
+            y=pion.coordonnees_Y-1
+            while x<self.damier.nbCase and y>0:
+                pAutour=self.getPionPos(x,y)
+                if (type(pAutour)=="pionNoir.pionNoir" or type(pAutour)=="DameNoire.DameNoire" )and not(self.getPionPos(x+1,y-1)):
+                    return True
+                x=x+1
+                y=y-1
+            x=pion.coordonnees_X-1
+            y=pion.coordonnees_Y+1
+            while x>0 and y<self.damier.nbCase:
+                pAutour=self.getPionPos(x,y)
+                if (type(pAutour)=="pionNoir.pionNoir" or type(pAutour)=="DameNoire.DameNoire" )and not(self.getPionPos(x-1,y+1)):
+                    return True
+                x=x-1
+                y=y+1
+            x=pion.coordonnees_X-1
+            y=pion.coordonnees_Y-1
+            while x>0 and y>0:
+                pAutour=self.getPionPos(x,y)
+                if (type(pAutour)=="pionNoir.pionNoir" or type(pAutour)=="DameNoire.DameNoire" )and not(self.getPionPos(x-1,y-1)):
+                    return True
+                x=x-1
+                y=y-1
+
+    def checkDeplacement(self,pion:Pions, X:int, Y:int):
+        if(X>0 and X<self.damier.nbCase) and (Y>0 and Y<self.damier.nbCase):
+            if not(self.getPionPos(X,Y)):
+                if(type(pion)=="pionNoir.pionNoir"):
+                    if(X==X-1 or X==X+1) and (Y==Y-1):
+                        return True
+                    else:
+                        return False
+
+                elif(type(pion)=="pionBlanc.pionBlanc"):
+                    if(X==X-1 or X==X+1) and (Y==Y+1):
+                        return True
+                    else:
+                        return False
+                    
+                elif(type(pion)=="DameNoire.DameNoire"):
+                    
+                elif(type(pion)=="DameBlanche.DameBlanche"):
+            
+            else:
+                return False
+        else:
+            return False
+            
+    def serializer(self):
+
+    def deserializer(self):

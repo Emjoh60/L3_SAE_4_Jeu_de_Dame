@@ -36,9 +36,6 @@ class Partie:
                     self.addPion(pionNoir("N"+str(cpt),x,y))
             cpt=cpt+1
 
-    
-    def effectuerDeplacement(self,x:int,y:int,pion:Pions):
-        
     def addPion(self,pion:Pions):
         self.listePion.insert(pion)
         self.listePion.sort()
@@ -98,35 +95,60 @@ class Partie:
             return "B"
 
 
-    def checkCapture(self,pion):
+    def checkCapture(self,pion, POS_x:int, POS_y:int):
         if(type(pion)=="pionNoir.pionNoir"):
             pAutour=self.getPionPos(pion.coordonnees_X+1,pion.coordonnees_Y+1)
             if (type(pAutour)=="pionBlanc.pionBlanc" or type(pAutour)=="DameBlanche.DameBlanche" )and not(self.getPionPos(pion.coordonnees_X+2,pion.coordonnees_Y+2)):
-                return True
+                if (pion.coordonnees_X+2 == POS_x and pion.coordonnees_Y+2 == POS_y):
+                    if (pion.se_deplacer(POS_x,POS_y)):
+                        pion.capturer(pAutour)
+                        return True
+                    
             pAutour=self.getPionPos(pion.coordonnees_X+1,pion.coordonnees_Y-1)
             if (type(pAutour)=="pionBlanc.pionBlanc" or type(pAutour)=="DameBlanche.DameBlanche" )and not(self.getPionPos(pion.coordonnees_X+2,pion.coordonnees_Y-2)):
-                return True
+                if (pion.coordonnees_X+2 == POS_x and pion.coordonnees_Y-2 == POS_y):
+                    if (pion.se_deplacer(POS_x,POS_y)):
+                        pion.capturer(pAutour)
+                        return True
             pAutour=self.getPionPos(pion.coordonnees_X-1,pion.coordonnees_Y+1)
             if (type(pAutour)=="pionBlanc.pionBlanc" or type(pAutour)=="DameBlanche.DameBlanche" )and not(self.getPionPos(pion.coordonnees_X-2,pion.coordonnees_Y+2)):
-                return True
+                if (pion.coordonnees_X-2 == POS_x and pion.coordonnees_Y+2 == POS_y):
+                    if (pion.se_deplacer(POS_x,POS_y)):
+                        pion.capturer(pAutour)
+                        return True
             pAutour=self.getPionPos(pion.coordonnees_X-1,pion.coordonnees_Y-1)
             if (type(pAutour)=="pionBlanc.pionBlanc" or type(pAutour)=="DameBlanche.DameBlanche" )and not(self.getPionPos(pion.coordonnees_X-2,pion.coordonnees_Y-2)):
-                return True
+                if (pion.coordonnees_X-2 == POS_x and pion.coordonnees_Y-2 == POS_y):
+                    if (pion.se_deplacer(POS_x,POS_y)):
+                        pion.capturer(pAutour)
+                        return True
             return False
 
         elif(type(pion)=="pionBlanc.pionBlanc"):
             pAutour=self.getPionPos(pion.coordonnees_X+1,pion.coordonnees_Y+1)
             if (type(pAutour)=="pionNoir.pionNoir" or type(pAutour)=="DameNoire.DameNoire" )and not(self.getPionPos(pion.coordonnees_X+2,pion.coordonnees_Y+2)):
-                return True
+                if (pion.coordonnees_X+2 == POS_x and pion.coordonnees_Y+2 == POS_y):
+                    if (pion.se_deplacer(POS_x,POS_y)):
+                        pion.capturer(pAutour)
+                        return True
             pAutour=self.getPionPos(pion.coordonnees_X+1,pion.coordonnees_Y-1)
             if (type(pAutour)=="pionNoir.pionNoir" or type(pAutour)=="DameNoire.DameNoire" )and not(self.getPionPos(pion.coordonnees_X+2,pion.coordonnees_Y-2)):
-                return True
+                if (pion.coordonnees_X+2 == POS_x and pion.coordonnees_Y-2 == y):
+                    if (pion.se_deplacer(POS_x,POS_y)):
+                        pion.capturer(pAutour)
+                        return True
             pAutour=self.getPionPos(pion.coordonnees_X-1,pion.coordonnees_Y+1)
             if (type(pAutour)=="pionNoir.pionNoir" or type(pAutour)=="DameNoire.DameNoire" )and not(self.getPionPos(pion.coordonnees_X-2,pion.coordonnees_Y+2)):
-                return True
+                if (pion.coordonnees_X-2 == POS_x and pion.coordonnees_Y+2 == y):
+                    if (pion.se_deplacer(POS_x,POS_y)):
+                        pion.capturer(pAutour)
+                        return True
             pAutour=self.getPionPos(pion.coordonnees_X-1,pion.coordonnees_Y-1)
             if (type(pAutour)=="pionNoir.pionNoir" or type(pAutour)=="DameNoire.DameNoire" )and not(self.getPionPos(pion.coordonnees_X-2,pion.coordonnees_Y-2)):
-                return True
+                if (pion.coordonnees_X-2 == POS_x and pion.coordonnees_Y-2 == POS_y):
+                    if (pion.se_deplacer(POS_x,POS_y)):
+                        pion.capturer(pAutour)
+                        return True
             return False
         elif(type(pion)=="DameNoire.DameNoire"):
             x=pion.coordonnees_X+1
@@ -135,6 +157,8 @@ class Partie:
                 pAutour=self.getPionPos(x,y)
                 if (type(pAutour)=="pionBlanc.pionBlanc" or type(pAutour)=="DameBlanche.DameBlanche" )and not(self.getPionPos(x+1,y+1)):
                     return True
+                elif(type(pAutour)=="pionNoir.pionNoir" or type(pAutour)=="DameNoire.DameNoire" )and not(self.getPionPos(x+1,y+1)):
+                    
                 x=x+1
                 y=y+1
             x=pion.coordonnees_X+1
@@ -196,29 +220,44 @@ class Partie:
                 y=y-1
 
     def checkDeplacement(self,pion:Pions, X:int, Y:int):
-        if(X>0 and X<self.damier.nbCase) and (Y>0 and Y<self.damier.nbCase):
-            if not(self.getPionPos(X,Y)):
-                if(type(pion)=="pionNoir.pionNoir"):
-                    if(X==X-1 or X==X+1) and (Y==Y-1):
-                        return True
-                    else:
-                        return False
+        if not(self.getPionPos(X,Y)):
+            if(type(pion)=="pionNoir.pionNoir"):
+                if(X==X-1 or X==X+1) and (Y==Y-1):
+                    return True
+                else:
+                    return False
 
-                elif(type(pion)=="pionBlanc.pionBlanc"):
-                    if(X==X-1 or X==X+1) and (Y==Y+1):
-                        return True
-                    else:
-                        return False
-                    
-                elif(type(pion)=="DameNoire.DameNoire"):
-                    
-                elif(type(pion)=="DameBlanche.DameBlanche"):
-            
-            else:
-                return False
+            elif(type(pion)=="pionBlanc.pionBlanc"):
+                if(X==X-1 or X==X+1) and (Y==Y+1):
+                    return True
+                else:
+                    return False
+                
+            elif(type(pion)=="DameNoire.DameNoire"):
+                if(X-pion.coordonnees_X==Y-pion.coordonnees_Y):
+                    for i in range(1,X-pion.coordonnees_X):
+                        if (self.getPionPos(pion.coordonnees_X+i,pion.coordonnees_Y+i)):
+                            return False
+                    return True
+                else:
+                    return False
+            elif(type(pion)=="DameBlanche.DameBlanche"):
+                if(X-pion.coordonnees_X==Y-pion.coordonnees_Y):
+                    for i in range(1,X-pion.coordonnees_X):
+                        if (self.getPionPos(pion.coordonnees_X+i,pion.coordonnees_Y+i)):
+                            return False
+                    return True
+                else:
+                    return False
         else:
             return False
-            
-    def serializer(self):
-
-    def deserializer(self):
+    
+    def effectuerDeplacement(self,x:int,y:int,pion:Pions):
+        if(pion.vivant) and  (x>0 and x<self.damier.nbCase) and (y>0 and y<self.damier.nbCase):
+            if(not self.checkCapture(pion)):
+                if(self.checkDeplacement(pion,x,y)):
+                    pion.se_deplacer(x,y)
+                else:
+                    return False                
+        else:
+            return False

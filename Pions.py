@@ -20,15 +20,12 @@ class Pions:
 
     #fonction pour déplacer le pion en diagonale
     def se_deplacer(self,x:int,y:int):
-        try:
-            self.coordonnees_X
-            self.coordonnees_Y
-            if(checkRegleDeDeplacement(x,y)):
-                self.coordonnees_Y = y
-                self.coordonnees_X = x
-        except NameError:
-            self.coordonnees_X = x
+        if(self.checkRegleDeDeplacement(x,y)):
             self.coordonnees_Y = y
+            self.coordonnees_X = x
+            return True
+        else:
+            return False
 
     #fonction pour capturer un pion
     @abstractmethod

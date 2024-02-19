@@ -12,12 +12,8 @@ class DameBlanche(Dame):
 
     #fonction pour vérifier le déplacement en diagonale
     def checkRegleDeDeplacement(self,x:int,y:int):
-        if(self.coordonnees_X+1 == x and self.coordonnees_Y-1 == y):
+        if(x-self.coordonnees_X==y-self.coordonnees_Y):
             return True
-        elif(self.coordonnees_X-1 == x and self.coordonnees_Y-1 == y):
-            return True
-        else:
-            return False
 
     #constructeur à partir d'un pion
     def __init_(self,p:pionBlanc):

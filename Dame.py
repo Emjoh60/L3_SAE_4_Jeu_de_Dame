@@ -11,3 +11,8 @@ class Dame(Pions):
         self.coordonnees_Y = y
         self.couleur = couleur
         self.vivant = True
+
+    #fonction pour vérifier le déplacement en diagonale
+    def checkRegleDeDeplacement(self,x:int,y:int):
+        if(abs(x-self.coordonnees_X)==abs(y-self.coordonnees_Y)):
+            return True

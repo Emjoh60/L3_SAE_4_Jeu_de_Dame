@@ -2,14 +2,13 @@ from Partie import Partie
 
 partie = Partie("Test","Aucun")
 partie.afficherListePion()
-x=partie.getPionPos(3,1)
-if x:
-    print("Pion en 1:1 -> "+x.id)
-else :
-    print("Pas de pion")
-partie.effectuerDeplacement(7,9,partie.getPion("B11"))
-partie.afficherListePion()
-partie.effectuerDeplacement(10,6,partie.getPion("B11"))
-partie.afficherListePion()
-partie.effectuerDeplacement(8,8,partie.getPion("B11"))
-partie.afficherListePion()
+play=True
+while play:
+    name=input("Selectionnez un pion (Entrez \"Fin\" pour arrêter le test):\n")
+    if partie.getPion(name):
+        x=input("Coordonnées X :\n")
+        y=input("Coordonnées Y :\n")
+        partie.effectuerDeplacement(int(x),int(y),partie.getPion(name))
+    elif name=="Fin":
+        play=False
+    partie.afficherListePion()

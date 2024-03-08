@@ -9,14 +9,6 @@ class DameBlanche(Dame):
     def __init__(self,id:str,x:int,y:int):
         super().__init__(id, x, y, "blanc")
 
-    #constructeur à partir d'un pion
-    def __init_(self,p:pionBlanc):
-        self.id = p.id
-        self.couleur = p.couleur
-        self.coordonnees_X = p.coordonnees_X
-        self.coordonnees_Y = p.coordonnees_Y
-        self.vivant = True
-
     #fonction pour capturer un pion
     def capturerPion(self,x:int,y:int,p:Pions):
         if(p.couleur=="noir"):

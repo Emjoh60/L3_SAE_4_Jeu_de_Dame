@@ -454,6 +454,7 @@ class Partie:
                     print("Deplacement OK")
                     self.damier.modifier(pion.coordonnees_X,pion.coordonnees_Y," ")
                     pion.se_deplacer(x,y)
+                    self.checkDame(pion)
                     self.damier.modifier(pion.coordonnees_X,pion.coordonnees_Y,pion.id)
                     return True
                 else:
@@ -475,3 +476,13 @@ class Partie:
                 return val    
         else:
             return False
+
+    def checkDame(self,pion:Pions):
+        if(isinstance(pion, pionNoir)):
+            if(pion.coordonnees_Y==1):
+                self.addPion(DameNoire(pion.id,pion.coordonnees_X,pion.coordonnees_Y))
+                self.removePion(pion)
+        elif(isinstance(pion, pionBlanc)):
+            if(pion.coordonnees_Y==self.damier.nbCase):
+                self.addPion(DameBlanche(pion.id,pion.coordonnees_X,pion.coordonnees_Y))
+                self.removePion(pion)

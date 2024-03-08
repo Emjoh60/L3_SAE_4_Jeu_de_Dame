@@ -9,6 +9,6 @@ while play:
         x=input("Coordonnées X :\n")
         y=input("Coordonnées Y :\n")
         partie.effectuerDeplacement(int(x),int(y),partie.getPion(name))
+        partie.afficherListePion()
     elif name=="Fin":
         play=False
-    partie.afficherListePion()

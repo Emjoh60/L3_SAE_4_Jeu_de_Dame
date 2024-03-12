@@ -9,7 +9,6 @@ class Menu:
         self.levelSon = levelSon
         self.couleurJoueur=couleurJoueur
         self.listePartie=[]
-        self.partieActive
         if(path.exists("Save/save.csv")):
             with open("Save/save.csv",'r') as file:
                 csvreader = csv.reader(file)
@@ -19,11 +18,17 @@ class Menu:
 
     def creerNouvellePartie(self,idPartie:str):
         self.partieActive=Partie(idPartie,"")
-        with open("Save/save.csv",'a+',newline=' ') as file:
-           writer=writer(file)
-           writer.writerow([idPartie])
-        file.close()
+        self.listePartie.append(idPartie)
+        self.ajouterSave(idPartie)
         return True
+    
+    def supprimerPartie(self,idPartie:str):
+        if not self.partieActive.id==idPartie:
+            self.listePartie.remove(idPartie)
+            self.removeSave(idPartie)
+            return True
+        else:
+            return False
     
     def choisirDifficulte(self,niveau:int):
         self.levelDifficulte=niveau
@@ -37,5 +42,38 @@ class Menu:
         
     def changerVolume(self,niveau:int):
         self.levelSon=niveau
-
     
+    def ajouterSave(self,id:str):
+        with open("Save/save.csv",'a+',newline=' ') as file:
+           writer=writer(file)
+           writer.writerow([id])
+        file.close()
+
+    def removeSave(self,id:str):
+        updatedlist=[]
+        with open("Save/save.csv","r",newline="") as file:
+            reader=csv.reader(file)
+            for row in reader:                     
+                if row[0]!=id:
+                    updatedlist.append(row)
+        file.close()
+        print(updatedlist)
+        with open("Save/save.csv","w+",newline="") as file:
+            Writer=csv.writer(file)
+            Writer.writerows(updatedlist)
+        file.close()
+
+    def sauvegarderPartie(self):
+        fSave = open("Save/"+self.partieActive.id+".save",'wb')
+        if(fSave):
+            reseau = dump(reseau,fSave)
+        fSave.close()
+        
+    def chargerPartie(self,id:str):
+        if(path.exists("Save/"+id+".save")):
+            fSave = open("Save/"+id+".save",'rb')
+            self.partieActive = load(fSave)
+
+    def quitterPartie(self):
+        # Demande de sauvegarde
+        self.partieActive=None

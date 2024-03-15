@@ -1,6 +1,8 @@
 import pygame
 import webbrowser
 import constants
+import menuJeux
+
 
 WINDOW_LONG=850
 WINDOW_LARG=480
@@ -19,13 +21,6 @@ class Button:
             screen.blit(self.image, (self.rect.x, self.rect.y))
         else :
             screen.blit(self.imageCover, (self.rect.x, self.rect.y))
-
-def checkMotion(pos,listBouton):
-    for bouton in listBouton:
-        if (bouton.rect.collidepoint(pos) and not bouton.motion):
-            bouton.motion = True
-        elif (not bouton.rect.collidepoint(pos) and bouton.motion):
-            bouton.motion = False
         
 def start():
     # Initialisation de pygame
@@ -33,6 +28,7 @@ def start():
 
     # Création d'une fenêtre
     pygame.display.set_caption("Jeu de Dame")
+    global screen
     screen = pygame.display.set_mode((WINDOW_LONG, WINDOW_LARG))
 
     # Charger une image
@@ -51,7 +47,7 @@ def start():
     listButton=[]
 
     # Création de boutton
-    startButton = Button(WINDOW_LONG/3,WINDOW_LARG/3,startImg,startImgClicked)
+    startButton = Button(WINDOW_LONG/3,WINDOW_LARG/2,startImg,startImgClicked)
     exitButton = Button(WINDOW_LONG-exitImg.get_width(),10, exitImg,exitImgClicked)
     githuButton = Button(25,WINDOW_LARG-logoGitHub.get_height(),logoGitHub,logoGitHubClicked)
     npButton = Button(WINDOW_LONG-npIcone.get_width(),WINDOW_LARG-npIcone.get_height(),npIcone,npIcone)
@@ -60,16 +56,6 @@ def start():
     listButton.append(exitButton)
     listButton.append(githuButton)
     listButton.append(npButton)
-
-    # Fonction qui permet de savoir si un elt est cliquer
-    def checkClique(pos):
-        global running
-        if(startButton.rect.collidepoint(pos)):
-            print("start")
-        elif(exitButton.rect.collidepoint(pos)):
-            running=False
-        elif(githuButton.rect.collidepoint(pos)):
-            webbrowser.open("https://github.com/Emjoh60/L3_SAE_4_Jeu_de_Dame")
 
     # Affichage de la fenêtre
     running = True
@@ -85,7 +71,18 @@ def start():
             if event.type == pygame.QUIT: 
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                checkClique(listButton,event.pos)
+                if(startButton.rect.collidepoint(event.pos)):
+                    print("start")
+                    menuJeux.start()
+                    running=False
+                elif(exitButton.rect.collidepoint(event.pos)):
+                    running=False
+                elif(githuButton.rect.collidepoint(event.pos)):
+                    webbrowser.open("https://github.com/Emjoh60/L3_SAE_4_Jeu_de_Dame")
             if event.type == pygame.MOUSEMOTION:
-                checkMotion(listButton,event.pos)
+                for bouton in listButton:
+                    if (bouton.rect.collidepoint(event.pos) and not bouton.motion):
+                        bouton.motion = True
+                    elif (not bouton.rect.collidepoint(event.pos) and bouton.motion):
+                        bouton.motion = False
     pygame.quit()

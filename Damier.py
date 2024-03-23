@@ -11,9 +11,7 @@ class Damier:
                 self.plateau[x-1,y-1]=" "
     
     def modifier(self,x:int,y:int,pion:str):
-        print(pion)
         self.plateau[x-1,y-1]=pion
-        print(self.plateau[x-1,y-1])
 
     def afficher_matrice(self):
         for ligne in self.plateau:

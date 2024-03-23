@@ -20,11 +20,10 @@ class pionBlanc(Pions):
     def capturerPion(self,x:int,y:int,p:Pions):
         if(p.couleur=="noir"):
             p.vivant = False
-            if((p.coordonnees_X==x+1 and p.coordonnees_X==self.coordonnees_X-1) or (p.coordonnees_X==x-1 and p.coordonnees_X==self.coordonnees_X+1))and((p.coordonnees_Y==y+1 and p.coordonnees_Y==self.coordonnees_Y-1) or (p.coordonnees_Y==y-1 and p.coordonnees_Y==self.coordonnees_Y+1)):
-                self.coordonnees_X=x
-                self.coordonnees_Y=y
-            else:
-                return False
+            p.coordonnees_X=-1
+            p.coordonnees_Y=-1
+            self.coordonnees_X=x
+            self.coordonnees_Y=y
         else:
             return False
         

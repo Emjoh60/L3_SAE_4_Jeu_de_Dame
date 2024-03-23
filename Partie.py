@@ -48,7 +48,7 @@ class Partie:
 
     def afficherListePion(self):
         for i in self.listePion :
-            print("Pions :"+str(i.id)+" Couleur : "+str(i.couleur)+" X : "+str(i.coordonnees_X)+" Y : "+str(i.coordonnees_Y))
+            print("Pions :"+str(i.id)+" Type :"+str(i)+" Couleur : "+str(i.couleur)+" X : "+str(i.coordonnees_X)+" Y : "+str(i.coordonnees_Y))
         self.damier.afficher_matrice()
 
     def addPion(self,pion:Pions):
@@ -65,12 +65,14 @@ class Partie:
                 return p
 
     def getPionPos(self,posX:int, posY:int):
-        x=str(self.damier.plateau[posX-1,posY-1])
-        print(x)
-        if x:
-            return self.getPion(x)
+        if(posX>0 and posX<=self.damier.nbCase and posY>0 and posY<=self.damier.nbCase ):
+            x=str(self.damier.plateau[posX-1,posY-1])
+            if x:
+                return self.getPion(x)
+            else:
+                return False
         else:
-            return False
+                return False
 
     def getPionIndex(self,index:int):
         return self.listePion[index]
@@ -86,9 +88,11 @@ class Partie:
         if cptWhite>0 and cptBlack>0:
             return False
         elif cptWhite>0 and cptBlack==0:
-            return "W"
+            self.winner="blanc"
+            return "blanc"
         elif cptWhite==0 and cptBlack>0:
-            return "B"
+            self.winner="noir"
+            return "noir"
 
 
     def checkCapture(self,pion):
@@ -97,15 +101,15 @@ class Partie:
                 pAutour=self.getPionPos(pion.coordonnees_X+1,pion.coordonnees_Y+1)
                 if (isinstance(pAutour, pionBlanc) or isinstance(pAutour, DameBlanche) )and not(self.getPionPos(pion.coordonnees_X+2,pion.coordonnees_Y+2)):
                     return True
-            if(pion.coordonnees_X<self.damier.nbCase-1 and pion.coordonnees_Y>1):    
+            if(pion.coordonnees_X<self.damier.nbCase-1 and pion.coordonnees_Y>2):    
                 pAutour=self.getPionPos(pion.coordonnees_X+1,pion.coordonnees_Y-1)
                 if (isinstance(pAutour, pionBlanc) or isinstance(pAutour, DameBlanche) )and not(self.getPionPos(pion.coordonnees_X+2,pion.coordonnees_Y-2)):
                     return True
-            if(pion.coordonnees_X>1 and pion.coordonnees_Y<self.damier.nbCase-1): 
+            if(pion.coordonnees_X>2 and pion.coordonnees_Y<self.damier.nbCase-1): 
                 pAutour=self.getPionPos(pion.coordonnees_X-1,pion.coordonnees_Y+1)
                 if (isinstance(pAutour, pionBlanc) or isinstance(pAutour, DameBlanche) )and not(self.getPionPos(pion.coordonnees_X-2,pion.coordonnees_Y+2)):
                     return True
-            if(pion.coordonnees_X>1 and pion.coordonnees_Y>1): 
+            if(pion.coordonnees_X>2 and pion.coordonnees_Y>2): 
                 pAutour=self.getPionPos(pion.coordonnees_X-1,pion.coordonnees_Y-1)
                 if (isinstance(pAutour, pionBlanc) or isinstance(pAutour, DameBlanche) )and not(self.getPionPos(pion.coordonnees_X-2,pion.coordonnees_Y-2)):
                     return True
@@ -115,15 +119,15 @@ class Partie:
                 pAutour=self.getPionPos(pion.coordonnees_X+1,pion.coordonnees_Y+1)
                 if (isinstance(pAutour, pionNoir) or isinstance(pAutour, DameNoire) )and not(self.getPionPos(pion.coordonnees_X+2,pion.coordonnees_Y+2)):
                     return True
-            if(pion.coordonnees_X<self.damier.nbCase-1 and pion.coordonnees_Y>1):    
+            if(pion.coordonnees_X<self.damier.nbCase-1 and pion.coordonnees_Y>2):    
                 pAutour=self.getPionPos(pion.coordonnees_X+1,pion.coordonnees_Y-1)
                 if (isinstance(pAutour, pionNoir) or isinstance(pAutour, DameNoire) )and not(self.getPionPos(pion.coordonnees_X+2,pion.coordonnees_Y-2)):
                     return True
-            if(pion.coordonnees_X>1 and pion.coordonnees_Y<self.damier.nbCase-1):     
+            if(pion.coordonnees_X>2 and pion.coordonnees_Y<self.damier.nbCase-1):     
                 pAutour=self.getPionPos(pion.coordonnees_X-1,pion.coordonnees_Y+1)
                 if (isinstance(pAutour, pionNoir) or isinstance(pAutour, DameNoire) )and not(self.getPionPos(pion.coordonnees_X-2,pion.coordonnees_Y+2)):
                     return True
-            if(pion.coordonnees_X>1 and pion.coordonnees_Y>1):    
+            if(pion.coordonnees_X>2 and pion.coordonnees_Y>2):    
                 pAutour=self.getPionPos(pion.coordonnees_X-1,pion.coordonnees_Y-1)
                 if (isinstance(pAutour, pionNoir) or isinstance(pAutour, DameNoire) )and not(self.getPionPos(pion.coordonnees_X-2,pion.coordonnees_Y-2)):
                     return True
@@ -141,7 +145,7 @@ class Partie:
                 y=y+1
             x=pion.coordonnees_X+1
             y=pion.coordonnees_Y-1
-            while x<self.damier.nbCase-1 and y>1:
+            while x<self.damier.nbCase-1 and y>2:
                 pAutour=self.getPionPos(x,y)
                 if (isinstance(pAutour, pionBlanc) or isinstance(pAutour, DameBlanche) )and not(self.getPionPos(x+1,y-1)):
                     return True
@@ -151,7 +155,7 @@ class Partie:
                 y=y-1
             x=pion.coordonnees_X-1
             y=pion.coordonnees_Y+1
-            while x>1 and y<self.damier.nbCase-1:
+            while x>2 and y<self.damier.nbCase-1:
                 pAutour=self.getPionPos(x,y)
                 if (isinstance(pAutour, pionBlanc) or isinstance(pAutour, DameBlanche) )and not(self.getPionPos(x-1,y+1)):
                     return True
@@ -161,7 +165,7 @@ class Partie:
                 y=y+1
             x=pion.coordonnees_X-1
             y=pion.coordonnees_Y-1
-            while x>1 and y>1:
+            while x>2 and y>2:
                 pAutour=self.getPionPos(x,y)
                 if (isinstance(pAutour, pionBlanc) or isinstance(pAutour, DameBlanche) )and not(self.getPionPos(x-1,y-1)):
                     return True
@@ -183,7 +187,7 @@ class Partie:
                 y=y+1
             x=pion.coordonnees_X+1
             y=pion.coordonnees_Y-1
-            while x<self.damier.nbCase-1 and y>1:
+            while x<self.damier.nbCase-1 and y>2:
                 pAutour=self.getPionPos(x,y)
                 if (isinstance(pAutour, pionNoir) or isinstance(pAutour, DameNoire) )and not(self.getPionPos(x+1,y-1)):
                     return True
@@ -193,7 +197,7 @@ class Partie:
                 y=y-1
             x=pion.coordonnees_X-1
             y=pion.coordonnees_Y+1
-            while x>1 and y<self.damier.nbCase-1:
+            while x>2 and y<self.damier.nbCase-1:
                 pAutour=self.getPionPos(x,y)
                 if (isinstance(pAutour, pionNoir) or isinstance(pAutour, DameNoire) )and not(self.getPionPos(x-1,y+1)):
                     return True
@@ -203,7 +207,7 @@ class Partie:
                 y=y+1
             x=pion.coordonnees_X-1
             y=pion.coordonnees_Y-1
-            while x>1 and y>1:
+            while x>2 and y>2:
                 pAutour=self.getPionPos(x,y)
                 if (isinstance(pAutour, pionNoir) or isinstance(pAutour, DameNoire) )and not(self.getPionPos(x-1,y-1)):
                     return True
@@ -220,15 +224,15 @@ class Partie:
                 pAutour=self.getPionPos(pion.coordonnees_X+1,pion.coordonnees_Y+1)
                 if (isinstance(pAutour, pionBlanc) or isinstance(pAutour, DameBlanche) )and not(self.getPionPos(pion.coordonnees_X+2,pion.coordonnees_Y+2)):
                     listePosition.append((pAutour,pion.coordonnees_X+2,pion.coordonnees_Y+2))
-            if(pion.coordonnees_X<self.damier.nbCase-1 and pion.coordonnees_Y>1):    
+            if(pion.coordonnees_X<self.damier.nbCase-1 and pion.coordonnees_Y>2):    
                 pAutour=self.getPionPos(pion.coordonnees_X+1,pion.coordonnees_Y-1)
                 if (isinstance(pAutour, pionBlanc) or isinstance(pAutour, DameBlanche) )and not(self.getPionPos(pion.coordonnees_X+2,pion.coordonnees_Y-2)):
                     listePosition.append((pAutour,pion.coordonnees_X+2,pion.coordonnees_Y-2))
-            if(pion.coordonnees_X>1 and pion.coordonnees_Y<self.damier.nbCase-1): 
+            if(pion.coordonnees_X>2 and pion.coordonnees_Y<self.damier.nbCase-1): 
                 pAutour=self.getPionPos(pion.coordonnees_X-1,pion.coordonnees_Y+1)
                 if (isinstance(pAutour, pionBlanc) or isinstance(pAutour, DameBlanche) )and not(self.getPionPos(pion.coordonnees_X-2,pion.coordonnees_Y+2)):
                     listePosition.append((pAutour,pion.coordonnees_X-2,pion.coordonnees_Y+2))
-            if(pion.coordonnees_X>1 and pion.coordonnees_Y>1): 
+            if(pion.coordonnees_X>2 and pion.coordonnees_Y>2): 
                 pAutour=self.getPionPos(pion.coordonnees_X-1,pion.coordonnees_Y-1)
                 if (isinstance(pAutour, pionBlanc) or isinstance(pAutour, DameBlanche) )and not(self.getPionPos(pion.coordonnees_X-2,pion.coordonnees_Y-2)):
                     listePosition.append((pAutour,pion.coordonnees_X-2,pion.coordonnees_Y-2))
@@ -237,15 +241,15 @@ class Partie:
                 pAutour=self.getPionPos(pion.coordonnees_X+1,pion.coordonnees_Y+1)
                 if (isinstance(pAutour, pionNoir) or isinstance(pAutour, DameNoire) )and not(self.getPionPos(pion.coordonnees_X+2,pion.coordonnees_Y+2)):
                     listePosition.append((pAutour,pion.coordonnees_X+2,pion.coordonnees_Y+2))
-            if(pion.coordonnees_X<self.damier.nbCase-1 and pion.coordonnees_Y>1):    
+            if(pion.coordonnees_X<self.damier.nbCase-1 and pion.coordonnees_Y>2):    
                 pAutour=self.getPionPos(pion.coordonnees_X+1,pion.coordonnees_Y-1)
                 if (isinstance(pAutour, pionNoir) or isinstance(pAutour, DameNoire) )and not(self.getPionPos(pion.coordonnees_X+2,pion.coordonnees_Y-2)):
                     listePosition.append((pAutour,pion.coordonnees_X+2,pion.coordonnees_Y-2))
-            if(pion.coordonnees_X>1 and pion.coordonnees_Y<self.damier.nbCase-1):     
+            if(pion.coordonnees_X>2 and pion.coordonnees_Y<self.damier.nbCase-1):     
                 pAutour=self.getPionPos(pion.coordonnees_X-1,pion.coordonnees_Y+1)
                 if (isinstance(pAutour, pionNoir) or isinstance(pAutour, DameNoire) )and not(self.getPionPos(pion.coordonnees_X-2,pion.coordonnees_Y+2)):
                     listePosition.append((pAutour,pion.coordonnees_X-2,pion.coordonnees_Y+2))
-            if(pion.coordonnees_X>1 and pion.coordonnees_Y>1):    
+            if(pion.coordonnees_X>2 and pion.coordonnees_Y>2):    
                 pAutour=self.getPionPos(pion.coordonnees_X-1,pion.coordonnees_Y-1)
                 if (isinstance(pAutour, pionNoir) or isinstance(pAutour, DameNoire) )and not(self.getPionPos(pion.coordonnees_X-2,pion.coordonnees_Y-2)):
                     listePosition.append((pAutour,pion.coordonnees_X-2,pion.coordonnees_Y-2))
@@ -272,7 +276,7 @@ class Partie:
                 y=y+1
             x=pion.coordonnees_X+1
             y=pion.coordonnees_Y-1
-            while x<self.damier.nbCase-1 and y>1:
+            while x<self.damier.nbCase-1 and y>2:
                 pAutour=self.getPionPos(x,y)
                 if (isinstance(pAutour, pionBlanc) or isinstance(pAutour, DameBlanche) )and not(self.getPionPos(x+1,y-1)):
                     listePosition.append((pAutour,x+1,y-1))
@@ -292,7 +296,7 @@ class Partie:
                 y=y-1
             x=pion.coordonnees_X-1
             y=pion.coordonnees_Y+1
-            while x>1 and y<self.damier.nbCase-1:
+            while x>2 and y<self.damier.nbCase-1:
                 pAutour=self.getPionPos(x,y)
                 if (isinstance(pAutour, pionBlanc) or isinstance(pAutour, DameBlanche) )and not(self.getPionPos(x-1,y+1)):
                     listePosition.append((pAutour,x-1,y+1))
@@ -312,7 +316,7 @@ class Partie:
                 y=y+1
             x=pion.coordonnees_X-1
             y=pion.coordonnees_Y-1
-            while x>1 and y>1:
+            while x>2 and y>2:
                 pAutour=self.getPionPos(x,y)
                 if (isinstance(pAutour, pionBlanc) or isinstance(pAutour, DameBlanche) )and not(self.getPionPos(x-1,y-1)):
                     listePosition.append((pAutour,x-1,y-1))
@@ -353,7 +357,7 @@ class Partie:
                 y=y+1
             x=pion.coordonnees_X+1
             y=pion.coordonnees_Y-1
-            while x<self.damier.nbCase-1 and y>1:
+            while x<self.damier.nbCase-1 and y>2:
                 pAutour=self.getPionPos(x,y)
                 if (isinstance(pAutour, pionNoir) or isinstance(pAutour, DameNoire) )and not(self.getPionPos(x+1,y-1)):
                     listePosition.append((pAutour,x+1,y-1))
@@ -373,7 +377,7 @@ class Partie:
                 y=y-1
             x=pion.coordonnees_X-1
             y=pion.coordonnees_Y+1
-            while x>1 and y<self.damier.nbCase-1:
+            while x>2 and y<self.damier.nbCase-1:
                 pAutour=self.getPionPos(x,y)
                 if (isinstance(pAutour, pionNoir) or isinstance(pAutour, DameNoire) )and not(self.getPionPos(x-1,y+1)):
                     listePosition.append((pAutour,x-1,y+1))
@@ -393,7 +397,7 @@ class Partie:
                 y=y+1
             x=pion.coordonnees_X-1
             y=pion.coordonnees_Y-1
-            while x>1 and y>1:
+            while x>2 and y>2:
                 pAutour=self.getPionPos(x,y)
                 if (isinstance(pAutour, pionNoir) or isinstance(pAutour, DameNoire) )and not(self.getPionPos(x-1,y-1)):
                     listePosition.append((pAutour,x-1,y-1))
@@ -445,33 +449,92 @@ class Partie:
         else:
             return False
     
+    def getDeplacement(self,pion:Pions):
+        listePosition=[]
+        if(isinstance(pion, pionNoir)):
+            x=pion.coordonnees_X+1
+            y=pion.coordonnees_Y-1
+            if (not(self.getPionPos(x,y)) and x<=self.damier.nbCase and y>0):
+                listePosition.append((x,y))
+            x=pion.coordonnees_X-1
+            if (not(self.getPionPos(x,y)) and x>0 and y>0):
+                listePosition.append((x,y))
+        elif(isinstance(pion, pionBlanc)):
+            x=pion.coordonnees_X+1
+            y=pion.coordonnees_Y+1
+            if (not(self.getPionPos(x,y)) and x<=self.damier.nbCase and y<=self.damier.nbCase):
+                listePosition.append((x,y))
+            x=pion.coordonnees_X-1
+            if (not(self.getPionPos(x,y)) and x>0 and y<=self.damier.nbCase):
+                listePosition.append((x,y))
+        elif(isinstance(pion, DameNoire) or isinstance(pion, DameBlanche)):
+            x=pion.coordonnees_X+1
+            y=pion.coordonnees_Y+1
+            valuable=True
+            while x<=self.damier.nbCase and y<=self.damier.nbCase and valuable:
+                if not(self.getPionPos(x,y)):
+                    listePosition.append((x,y))
+                    x=x+1
+                    y=y+1
+                else:
+                    valuable=False
+            x=pion.coordonnees_X+1
+            y=pion.coordonnees_Y-1
+            valuable=True
+            while x<=self.damier.nbCase and y>=1 and valuable:
+                if not(self.getPionPos(x,y)):
+                    listePosition.append((x,y))
+                    x=x+1
+                    y=y-1
+                else:
+                    valuable=False
+            x=pion.coordonnees_X-1
+            y=pion.coordonnees_Y+1
+            valuable=True
+            while x>=1 and y<=self.damier.nbCase and valuable:
+                if not(self.getPionPos(x,y)):
+                    listePosition.append((x,y))
+                    x=x-1
+                    y=y+1
+                else:
+                    valuable=False
+            x=pion.coordonnees_X-1
+            y=pion.coordonnees_Y-1
+            valuable=True
+            while x>=1 and y>=1 and valuable:
+                if not(self.getPionPos(x,y)):
+                    listePosition.append((x,y))
+                    x=x-1
+                    y=y-1
+                else:
+                    valuable=False
+        return listePosition
+
     def effectuerDeplacement(self,x:int,y:int,pion:Pions):
-        if(pion.vivant) and  (x>0 and x<=self.damier.nbCase) and (y>0 and y<=self.damier.nbCase):
-            print("Premier OK")
+        if(pion.vivant) and (x>0 and x<=self.damier.nbCase) and (y>0 and y<=self.damier.nbCase):
             if(not self.checkCapture(pion)):
-                print("Pas capture OK")
                 if(self.checkDeplacement(pion,x,y)):
-                    print("Deplacement OK")
                     self.damier.modifier(pion.coordonnees_X,pion.coordonnees_Y," ")
                     pion.se_deplacer(x,y)
-                    self.checkDame(pion)
+                    tampon=pion.id
+                    if self.checkDame(pion):
+                        pion=self.getPion(tampon)
                     self.damier.modifier(pion.coordonnees_X,pion.coordonnees_Y,pion.id)
                     return True
                 else:
-                    print("Deplacement pas OK")
                     return False
             else:
-                print("Pas capture Non OK")
                 val=False
                 for i in self.getCapture(pion):
-                    print(i[0])
                     if x==i[1] and y==i[2]:
-                        print("Capture")
                         val=True
-                        print("Deplacement OK")
                         self.damier.modifier(pion.coordonnees_X,pion.coordonnees_Y," ")
                         self.damier.modifier(i[0].coordonnees_X,i[0].coordonnees_Y," ")
                         pion.capturerPion(i[1],i[2],i[0])
+                        self.removePion(i[0])
+                        tampon=pion.id
+                        if self.checkDame(pion):
+                            pion=self.getPion(tampon)
                         self.damier.modifier(pion.coordonnees_X,pion.coordonnees_Y,pion.id)
                 return val    
         else:
@@ -482,7 +545,15 @@ class Partie:
             if(pion.coordonnees_Y==1):
                 self.addPion(DameNoire(pion.id,pion.coordonnees_X,pion.coordonnees_Y))
                 self.removePion(pion)
+                return True
+            else:
+                return False
         elif(isinstance(pion, pionBlanc)):
             if(pion.coordonnees_Y==self.damier.nbCase):
                 self.addPion(DameBlanche(pion.id,pion.coordonnees_X,pion.coordonnees_Y))
                 self.removePion(pion)
+                return True
+            else:
+                return False
+        else:
+            return False

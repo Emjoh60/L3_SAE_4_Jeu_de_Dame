@@ -1,4 +1,5 @@
 from Partie import Partie
+from AutoPlayer import AutoPlayer
 from pickle import load, dump
 from os import path
 import csv 
@@ -8,18 +9,39 @@ class Menu:
         self.levelDifficulte = levelDifficulte
         self.levelSon = levelSon
         self.couleurJoueur=couleurJoueur
+        self.ia=AutoPlayer(self.getCouleurOppose(self.couleurJoueur),None,self.levelDifficulte)
         self.listePartie=[]
         if(path.exists("Save/save.csv")):
             with open("Save/save.csv",'r') as file:
                 csvreader = csv.reader(file)
                 for row in csvreader:
-                    self.listePartie.append(row[0])
+                    self.listePartie.append((row[0],row[1],row[2]))
             file.close()
 
-    def creerNouvellePartie(self,idPartie:str):
+    def getParametre(self,id:str):
+        retour=()
+        for partie in self.listePartie:
+            if partie[0]==id:
+                retour=(partie[1],partie[2])
+        return retour
+
+    def getCouleurOppose(self):
+        if self.couleur=="blanc":
+            return "noir"
+        elif self.couleur=="noir":
+            return "blanc"
+        else:
+            return False
+
+    def creerNouvellePartie(self,idPartie:str,levelSon,couleurJoueur):
         self.partieActive=Partie(idPartie,"")
+        self.levelSon = levelSon
+        self.couleurJoueur=couleurJoueur
         self.listePartie.append(idPartie)
         self.ajouterSave(idPartie)
+        self.ia.couleur=self.getCouleurOppose(self.couleurJoueur)
+        self.ia.levelDifficulte=self.levelDifficulte
+        self.ia.partie=self.partieActive
         return True
     
     def supprimerPartie(self,idPartie:str):
@@ -32,9 +54,11 @@ class Menu:
     
     def choisirDifficulte(self,niveau:int):
         self.levelDifficulte=niveau
+        self.ia.levelDifficulte=self.levelDifficulte
 
     def choisirCouleur(self,couleur:str):
         self.couleurJoueur=couleur
+        self.ia.couleur=self.getCouleurOppose(self.couleurJoueur)
 
     def afficherRegles(self):
         # Lecture des règles écrites dans un fichier
@@ -46,7 +70,7 @@ class Menu:
     def ajouterSave(self,id:str):
         with open("Save/save.csv",'a+',newline=' ') as file:
            writer=writer(file)
-           writer.writerow([id])
+           writer.writerow([id,self.couleurJoueur,self.levelDifficulte])
         file.close()
 
     def removeSave(self,id:str):
@@ -73,6 +97,12 @@ class Menu:
         if(path.exists("Save/"+id+".save")):
             fSave = open("Save/"+id+".save",'rb')
             self.partieActive = load(fSave)
+            param=self.getParametre(id)
+            self.couleurJoueur=param[0]
+            self.levelDifficulte=param[1]
+            self.ia.couleur=self.getCouleurOppose(self.couleurJoueur)
+            self.ia.levelDifficulte=self.levelDifficulte
+            self.ia.partie=self.partieActive
 
     def quitterPartie(self):
         # Demande de sauvegarde

@@ -1,7 +1,8 @@
 import numpy as np
 
+# Classe Damier, représentant les pions sur le damier
 class Damier:
-    #constructeur d'un damier
+    # Constructeur d'un damier
     def __init__(self,id:str,nbCase:int):
         self.id = id
         self.nbCase = nbCase
@@ -10,9 +11,11 @@ class Damier:
             for y in range(self.nbCase):
                 self.plateau[x-1,y-1]=" "
     
+    # Fonction permettant de modifier une case du damier
     def modifier(self,x:int,y:int,pion:str):
         self.plateau[x-1,y-1]=pion
 
+    # Fonction permettant d'afficher le damier sous forme de matrice
     def afficher_matrice(self):
         for ligne in self.plateau:
             for element in ligne:

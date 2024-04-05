@@ -2,11 +2,12 @@ import pygame
 import webbrowser
 import constants
 import menuJeux
-
+from Menu import Menu
 
 WINDOW_LONG=850
 WINDOW_LARG=480
 
+# Classe bouton
 class Button:
     def __init__(self, x, y, image, imageCover):
         self.image = image
@@ -22,7 +23,7 @@ class Button:
         else :
             screen.blit(self.imageCover, (self.rect.x, self.rect.y))
         
-def start():
+def start(menu:Menu):
     # Initialisation de pygame
     pygame.init()
 
@@ -52,6 +53,7 @@ def start():
     githuButton = Button(25,WINDOW_LARG-logoGitHub.get_height(),logoGitHub,logoGitHubClicked)
     npButton = Button(WINDOW_LONG-npIcone.get_width(),WINDOW_LARG-npIcone.get_height(),npIcone,npIcone)
 
+    # Ajout de boutton
     listButton.append(startButton)
     listButton.append(exitButton)
     listButton.append(githuButton)
@@ -70,15 +72,16 @@ def start():
             # Si personne fait une action on demande de quitter le jeu
             if event.type == pygame.QUIT: 
                 running = False
+            # Sinon on traite selon la zone cliquée
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if(startButton.rect.collidepoint(event.pos)):
-                    print("start")
-                    menuJeux.start()
+                    menuJeux.start(menu)
                     running=False
                 elif(exitButton.rect.collidepoint(event.pos)):
                     running=False
                 elif(githuButton.rect.collidepoint(event.pos)):
                     webbrowser.open("https://github.com/Emjoh60/L3_SAE_4_Jeu_de_Dame")
+            # Sinon on passe le bouton en mode "motion"
             if event.type == pygame.MOUSEMOTION:
                 for bouton in listButton:
                     if (bouton.rect.collidepoint(event.pos) and not bouton.motion):
